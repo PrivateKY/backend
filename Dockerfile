@@ -1,15 +1,14 @@
 FROM node:20-alpine
 WORKDIR /app
 
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+# Install pnpm manually instead of using Corepack
+RUN npm install -g pnpm@latest
 
-# Copy package files first (better layer caching)
+# Copy package files first (for better layer caching)
 COPY package.json pnpm-lock.yaml ./
 
-# Force a clean install (removes caching issues)
-RUN pnpm fetch && pnpm install --no-frozen-lockfile --force
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the source code
 COPY . .
