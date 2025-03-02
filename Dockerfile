@@ -6,12 +6,11 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
 # install packages
-COPY package.json ./
-COPY pnpm-lock.yaml ./
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 # build source
-COPY . ./
+COPY . .
 RUN pnpm run build
 
 # start server
