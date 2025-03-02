@@ -1,14 +1,14 @@
 FROM node:20-alpine
 WORKDIR /app
 
-# Install pnpm manually instead of using Corepack
-RUN npm install -g pnpm@latest
+# Install the latest compatible version of pnpm
+RUN npm install -g pnpm@8
 
-# Copy package files first (for better layer caching)
+# Copy package files first (for better caching)
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile
+# Force regeneration of the lockfile if needed
+RUN pnpm install --frozen-lockfile --force
 
 # Copy the rest of the source code
 COPY . .
