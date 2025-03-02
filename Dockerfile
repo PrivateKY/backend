@@ -6,15 +6,16 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
 # install packages
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # build source
-COPY . .
+COPY . ./
 RUN pnpm run build
 
 # start server
 EXPOSE 80
 ENV MWB_SERVER__PORT=80
 ENV NODE_ENV=production
-CMD ["pnpm", "run", "start"]
+CMD ["pnpm", "run", "start"] 
